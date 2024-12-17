@@ -79,14 +79,21 @@ CHECK() {
     rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
   fi
 }
+# "https://api.github.com/repos/Nriver/trilium-translation/releases/latest"
+# *trilium-cn-linux-x64-server.zip
+
+
+# https://api.github.com/repos/TriliumNext/Notes/releases/latest
+
+
 
 DOWNLOAD(){
   cd /opt
   echo -e "${GREEN_COLOR}下载 trilium $VERSION ...${RES}"
-    release_url=$(curl -s "https://api.github.com/repos/Nriver/trilium-translation/releases/latest" | grep "browser_download_url.*trilium-cn-linux-x64-server.zip" | cut -d : -f 2,3 | tr -d \")
-    curl -L -o trilium.zip $release_url $CURL_BAR;
+    release_url=$(curl -s "https://api.github.com/repos/TriliumNext/Notes/releases/latest" | grep "browser_download_url.*server-linux-x64.tar.xz" | cut -d : -f 2,3 | tr -d \")
+    curl -L -o trilium.tar.xz $release_url $CURL_BAR;
 
-  if [ -f "trilium.zip" ]; then
+  if [ -f "trilium.tar.xz" ]; then
     echo -e "${GREEN_COLOR}下载成功 ${RES}"
   else
     echo -e "${RED_COLOR}下载 trilium 失败！${RES}"
@@ -99,8 +106,12 @@ INSTALL() {
   # 下载 trilium 程序
   DOWNLOAD
 
+  # echo -e "${GREEN_COLOR}解压压缩包 ...${RES}"
+  # unzip trilium.zip >/dev/null 2>&1;
+
   echo -e "${GREEN_COLOR}解压压缩包 ...${RES}"
-  unzip trilium.zip >/dev/null 2>&1;
+  tar -xvJf trilium.tar.xz -C /opt >/dev/null 2>&1;
+
 
   echo -e "${GREEN_COLOR}删除旧版本 ...${RES}"
   rm -rf trilium >/dev/null 2>&1;
@@ -113,7 +124,7 @@ INSTALL() {
 
   # 删除临时文件
   echo -e "\r\n${GREEN_COLOR}删除临时文件${RES}"
-  rm -f trilium.zip
+  rm -f trilium.tar.xz
 
 }
 
@@ -195,7 +206,11 @@ UPDATE() {
     DOWNLOAD
 
     echo -e "${GREEN_COLOR}解压压缩包 ...${RES}"
-    unzip trilium.zip >/dev/null 2>&1;
+    tar -xvJf trilium.tar.xz -C /opt >/dev/null 2>&1;
+
+
+    echo -e "${GREEN_COLOR}删除旧版本 ...${RES}"
+    rm -rf trilium >/dev/null 2>&1;
 
     echo -e "${GREEN_COLOR}正在更新 ...${RES}"
     sudo mv trilium-linux-x64-server $INSTALL_PATH
@@ -205,7 +220,7 @@ UPDATE() {
     echo -e "\r\n${GREEN_COLOR}trilium 已更新到最新稳定版！${RES}\r\n"
     # 删除临时文件
     echo -e "\r\n${GREEN_COLOR}删除临时文件${RES}"
-    rm -f trilium.zip
+    rm -f trilium.tar.xz
   fi
 }
 
